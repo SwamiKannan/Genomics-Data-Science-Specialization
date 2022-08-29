@@ -1,0 +1,133 @@
+<meta charset="utf-8"/>
+<co-content>
+ <p>
+  In lecture and in a practical, we saw an implementation of the naive exact matching algorithm:
+ </p>
+ <pre language="python">def naive(p, t):
+    occurrences = []
+    for i in range(len(t) - len(p) + 1):  # loop over alignments
+        match = True
+        for j in range(len(p)):  # loop over characters
+            if t[i+j] != p[j]:  # compare characters
+                match = False
+                break
+        if match:
+            occurrences.append(i)  # all chars matched; record
+    return occurrences
+</pre>
+ <p>
+  ...and we saw a function that takes a DNA string and returns its reverse complement:
+ </p>
+ <pre language="python">def reverseComplement(s):
+    complement = {'A': 'T', 'C': 'G', 'G': 'C', 'T': 'A', 'N': 'N'}
+    t = ''
+    for base in s:
+        t = complement[base] + t
+    return t
+</pre>
+ <p>
+  ...and we saw a function that parses a DNA reference genome from a file in the FASTA format.
+ </p>
+ <pre language="python">def readGenome(filename):
+    genome = ''
+    with open(filename, 'r') as f:
+        for line in f:
+            # ignore header line with genome information
+            if not line[0] == '&gt;':
+                genome += line.rstrip()
+    return genome
+</pre>
+ <p>
+  ...and we saw a function that parses the read and quality strings from a FASTQ file containing sequencing reads.
+ </p>
+ <pre language="python">def readFastq(filename):
+    sequences = []
+    qualities = []
+    with open(filename) as fh:
+        while True:
+            fh.readline()  # skip name line
+            seq = fh.readline().rstrip()  # read base sequence
+            fh.readline()  # skip placeholder line
+            qual = fh.readline().rstrip() # base quality line
+            if len(seq) == 0:
+                break
+            sequences.append(seq)
+            qualities.append(qual)
+    return sequences, qualities
+</pre>
+ <p>
+  First, implement a version of the naive exact matching algorithm that is
+  <em>
+   strand-aware
+  </em>
+  . That is, instead of looking only for occurrences of P in T, additionally look for occurrences of the
+  <em>
+   reverse complement
+  </em>
+  of P in T. If P is ACT, your function should find occurrences of both ACTand its reverse complement AGT in T.
+ </p>
+ <p>
+  If P and its reverse complement are identical (e.g. AACGTT), then a given match offset should be reported only once. So if your new function is called naive_with_rc, then the old naivefunction and your new naive_with_rc function should return the same results when P equals its reverse complement.
+ </p>
+ <p>
+  Hint: See
+  <a href="http://nbviewer.ipython.org/github/BenLangmead/ads1-hw-examples/blob/master/hw1_naive_with_rc.ipynb">
+   this notebook
+  </a>
+  for a few examples you can use to test your naive_with_rc function.
+ </p>
+ <p>
+  Next, download and parse the lambda virus genome, at:
+  <a href="https://d28rh4a8wq0iu5.cloudfront.net/ads1/data/lambda_virus.fa">
+   https://d28rh4a8wq0iu5.cloudfront.net/ads1/data/lambda_virus.fa
+  </a>
+ </p>
+</co-content>
+<style>
+ body {
+    padding: 50px 85px 50px 85px;
+}
+
+table th, table td {
+    border: 1px solid #e0e0e0;
+    padding: 5px 20px;
+    text-align: left;
+}
+input {
+    margin: 10px;
+}
+}
+th {
+    font-weight: bold;
+}
+td, th {
+    display: table-cell;
+    vertical-align: inherit;
+}
+img {
+    height: auto;
+    max-width: 100%;
+}
+pre {
+    display: block;
+    margin: 20px;
+    background: #424242;
+    color: #fff;
+    font-size: 13px;
+    white-space: pre-wrap;
+    padding: 9.5px;
+    margin: 0 0 10px;
+    border: 1px solid #ccc;
+}
+</style>
+<script async="" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript">
+</script>
+<script type="text/x-mathjax-config">
+ MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$$','$$'], ['$','$'] ],
+      displayMath: [ ["\\[","\\]"] ],
+      processEscapes: true
+    }
+  });
+</script>
